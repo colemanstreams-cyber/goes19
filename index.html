@@ -113,17 +113,17 @@
                 <span class="row-val snr-good" id="peak-snr">15.1 dB</span>
             </div>
             <div class="row">
-                <span class="row-key">Signal level</span>
-                <div class="signal">
-                    <div class="bar on" style="height:6px"></div>
-                    <div class="bar on" style="height:9px"></div>
-                    <div class="bar on" style="height:11px"></div>
-                    <div class="bar on" style="height:13px"></div>
-                    <div class="bar on" style="height:16px"></div>
-                    <div class="bar" style="height:16px"></div>
-                    <div class="bar" style="height:16px"></div>
-                </div>
-            </div>
+    <span class="row-key">Signal level</span>
+    <div class="signal">
+        <div class="bar on" style="height:6px"></div>
+        <div class="bar on" style="height:9px"></div>
+        <div class="bar on" style="height:11px"></div>
+        <div class="bar on" style="height:13px"></div>
+        <div class="bar on" style="height:16px"></div>
+        <div class="bar" style="height:16px"></div>
+        <div class="bar" style="height:16px"></div>
+                  </div>
+             </div>
         </div>
     </div>
 <div style="padding: 0 2.5rem 1.5rem;">
@@ -162,14 +162,28 @@
                 const avg = parseFloat(d.avg_snr);
                 const peak = parseFloat(d.peak_snr);
                 const maxSnr = 20;
+
                 document.getElementById('avg-snr').textContent = avg.toFixed(1) + ' dB';
                 document.getElementById('peak-snr').textContent = peak.toFixed(1) + ' dB';
                 document.getElementById('avg-snr-bar').style.width = Math.min((avg / maxSnr) * 100, 100) + '%';
                 document.getElementById('peak-snr-bar').style.width = Math.min((peak / maxSnr) * 100, 100) + '%';
+
                 const avgEl = document.getElementById('avg-snr');
                 const peakEl = document.getElementById('peak-snr');
                 avgEl.style.color = avg >= 8 ? '#16a34a' : avg >= 5 ? '#d97706' : '#dc2626';
                 peakEl.style.color = peak >= 8 ? '#16a34a' : peak >= 5 ? '#d97706' : '#dc2626';
+
+                // Signal bars — range 3dB (min) to 10dB (max) = 7 bars
+                const MIN_SNR = 3;
+                const MAX_SNR = 10;
+                const bars = document.querySelectorAll('#signal-bars .bar');
+                const totalBars = bars.length;
+                const clamped = Math.min(Math.max(avg, MIN_SNR), MAX_SNR);
+                const activeBars = Math.round(((clamped - MIN_SNR) / (MAX_SNR - MIN_SNR)) * totalBars);
+                const barColor = avg >= 8 ? '#16a34a' : avg >= 5 ? '#d97706' : '#dc2626';
+                bars.forEach((bar, i) => {
+                    bar.style.background = i < activeBars ? barColor : '#e5e7eb';
+                });
             })
             .catch(() => {
                 document.getElementById('avg-snr').textContent = 'N/A';
