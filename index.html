@@ -156,21 +156,25 @@
             })
             .catch(() => document.getElementById('timestamp').textContent = 'Unknown');
 
-        function openLightbox() {
-            const v = document.getElementById('satimage').src.split('?v=')[1];
-            document.getElementById('lightbox-img').src = 'latest.jpg?v=1777132932' + v;
-            document.getElementById('lightbox').classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeLightbox() {
-            document.getElementById('lightbox').classList.remove('open');
-            document.body.style.overflow = '';
-        }
-
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') closeLightbox();
-        });
+        fetch('snr.json')
+            .then(r => r.json())
+            .then(d => {
+                const avg = parseFloat(d.avg_snr);
+                const peak = parseFloat(d.peak_snr);
+                const maxSnr = 20;
+                document.getElementById('avg-snr').textContent = avg.toFixed(1) + ' dB';
+                document.getElementById('peak-snr').textContent = peak.toFixed(1) + ' dB';
+                document.getElementById('avg-snr-bar').style.width = Math.min((avg / maxSnr) * 100, 100) + '%';
+                document.getElementById('peak-snr-bar').style.width = Math.min((peak / maxSnr) * 100, 100) + '%';
+                const avgEl = document.getElementById('avg-snr');
+                const peakEl = document.getElementById('peak-snr');
+                avgEl.style.color = avg >= 8 ? '#16a34a' : avg >= 5 ? '#d97706' : '#dc2626';
+                peakEl.style.color = peak >= 8 ? '#16a34a' : peak >= 5 ? '#d97706' : '#dc2626';
+            })
+            .catch(() => {
+                document.getElementById('avg-snr').textContent = 'N/A';
+                document.getElementById('peak-snr').textContent = 'N/A';
+            });
     </script>
 </body>
 </html>
