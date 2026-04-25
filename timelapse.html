@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GOESpie Live — 24hr Timelapse</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #f5f6f8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #1a1a2e; }
+        .header { background: #fff; border-bottom: 1px solid #e8eaed; padding: 1.1rem 2.5rem; display: flex; align-items: center; justify-content: space-between; }
+        .brand { font-size: 16px; font-weight: 600; letter-spacing: -0.02em; color: #1a1a2e; }
+        .brand span { color: #2563eb; }
+        .back-link { font-size: 13px; color: #2563eb; text-decoration: none; display: flex; align-items: center; gap: 6px; }
+        .back-link:hover { text-decoration: underline; }
+        .hero { padding: 1.5rem 2.5rem; }
+        .image-frame { background: #fff; border: 1px solid #e8eaed; border-radius: 16px; overflow: hidden; }
+        .image-top-bar { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 1.25rem; border-bottom: 1px solid #f0f1f3; }
+        .image-label { font-size: 13px; color: #6b7280; }
+        .image-label strong { color: #111827; font-weight: 600; }
+        .timestamp { font-size: 12px; color: #9ca3af; }
+        .gif-wrap { width: 100%; background: #f8faff; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+        .gif-wrap img { max-width: 100%; border-radius: 8px; }
+        .info-bar { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid #f0f1f3; }
+        .stat { padding: 0.9rem 1.25rem; border-right: 1px solid #f0f1f3; }
+        .stat:last-child { border-right: none; }
+        .stat-label { font-size: 11px; color: #9ca3af; margin-bottom: 4px; }
+        .stat-value { font-size: 14px; font-weight: 600; color: #111827; }
+        .footer { margin: 0 2.5rem 2.5rem; padding: 1rem 1.25rem; border-top: 1px solid #e8eaed; background: #fff; border-radius: 0 0 12px 12px; display: flex; justify-content: space-between; font-size: 11px; color: #9ca3af; }
+        @media (max-width: 640px) {
+            .header { padding: 1rem 1.25rem; }
+            .hero { padding: 1rem 1.25rem; }
+            .info-bar { grid-template-columns: repeat(2, 1fr); }
+            .stat:nth-child(2) { border-right: none; }
+            .footer { flex-direction: column; gap: 4px; margin: 0 1.25rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="brand">GOESpie <span>Live</span></div>
+        <a class="back-link" href="index.html">&#8592; Back to latest image</a>
+    </div>
+
+    <div class="hero">
+        <div class="image-frame">
+            <div class="image-top-bar">
+                <div class="image-label"><strong>GOES-19</strong> · 24-hour timelapse · ABI false color</div>
+                <div class="timestamp" id="timestamp">Loading...</div>
+            </div>
+            <div class="gif-wrap">
+                <img src="timelapse.gif" alt="GOES-19 24-hour timelapse" id="timelapse-img">
+            </div>
+            <div class="info-bar">
+                <div class="stat"><div class="stat-label">Frames</div><div class="stat-value">Up to 24</div></div>
+                <div class="stat"><div class="stat-label">Coverage</div><div class="stat-value">Last 24 hrs</div></div>
+                <div class="stat"><div class="stat-label">Updates</div><div class="stat-value">Every hour</div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <span>Powered by SatDump · Hosted on GitHub Pages</span>
+        <span>Imagery received directly via HRIT downlink</span>
+    </div>
+
+    <script>
+        fetch('timestamp.txt')
+            .then(r => r.text())
+            .then(t => {
+                document.getElementById('timestamp').textContent = 'Last updated ' + t.trim();
+            })
+            .catch(() => document.getElementById('timestamp').textContent = 'Unknown');
+    </script>
+</body>
+</html>
