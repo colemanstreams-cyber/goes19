@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GOESpie Live — GOES-19 Satellite Imagery</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: system-ui, sans-serif; background: #0a0a1a; color: #fff; min-height: 100vh; }
+        header { padding: 1.5rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: space-between; }
+        .site-title { font-size: 1.2rem; font-weight: 500; }
+        .site-sub { font-size: 0.8rem; opacity: 0.5; margin-top: 2px; }
+        .live-badge { font-size: 0.75rem; background: rgba(59,109,17,0.3); color: #7ec850; padding: 4px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: #7ec850; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; padding: 1.5rem 2rem; }
+        .stat { background: rgba(255,255,255,0.05); border-radius: 10px; padding: 0.75rem 1rem; }
+        .stat-label { font-size: 0.7rem; opacity: 0.5; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .stat-value { font-size: 1rem; font-weight: 500; }
+        .image-container { padding: 0 2rem 1.5rem; }
+        .image-card { border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden; }
+        .image-card img { width: 100%; display: block; }
+        .image-meta { padding: 1rem 1.25rem; display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem; }
+        .meta-label { opacity: 0.5; margin-bottom: 2px; }
+        .meta-value { font-weight: 500; }
+        footer { text-align: center; padding: 1.5rem; font-size: 0.75rem; opacity: 0.3; border-top: 1px solid rgba(255,255,255,0.05); }
+        @media (max-width: 600px) { header { flex-direction: column; align-items: flex-start; gap: 12px; } .stats { grid-template-columns: repeat(2, 1fr); } }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <div class="site-title">GOESpie Live</div>
+            <div class="site-sub">GOES-19 Full Disk Earth Imagery</div>
+        </div>
+        <div class="live-badge"><span class="dot"></span> Live — updates every hour</div>
+    </header>
+
+    <div class="stats">
+        <div class="stat"><div class="stat-label">Satellite</div><div class="stat-value">GOES-19</div></div>
+        <div class="stat"><div class="stat-label">Last updated</div><div class="stat-value" id="timestamp">Loading...</div></div>
+        <div class="stat"><div class="stat-label">Frequency</div><div class="stat-value">1694.1 MHz</div></div>
+        <div class="stat"><div class="stat-label">Ground station</div><div class="stat-value">Richmond, VA</div></div>
+    </div>
+
+    <div class="image-container">
+        <div class="image-card">
+            <img src="latest.jpg" alt="Latest GOES-19 Full Disk Image" id="satimage">
+            <div class="image-meta">
+                <div><div class="meta-label">Image type</div><div class="meta-value">Full disk — Visible</div></div>
+                <div style="text-align:right"><div class="meta-label">Received by</div><div class="meta-value">GOESpie — Richmond, VA</div></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>Imagery received directly from GOES-19 via HRIT downlink &middot; Powered by SatDump &middot; Hosted on GitHub Pages</footer>
+
+    <script>
+        fetch('timestamp.txt')
+            .then(r => r.text())
+            .then(t => document.getElementById('timestamp').textContent = t.trim())
+            .catch(() => document.getElementById('timestamp').textContent = 'Unknown');
+    </script>
+</body>
+</html>
