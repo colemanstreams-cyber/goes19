@@ -18,8 +18,17 @@
         .image-label { font-size: 13px; color: #6b7280; }
         .image-label strong { color: #111827; font-weight: 600; }
         .timestamp { font-size: 12px; color: #9ca3af; }
-        .gif-wrap { width: 100%; background: #f8faff; display: flex; align-items: center; justify-content: center; padding: 2rem; }
-        .gif-wrap img { max-width: 100%; border-radius: 8px; }
+        .canvas-wrap { width: 100%; background: #f8faff; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+        canvas { max-width: 100%; border-radius: 8px; }
+        .controls { padding: 1rem 1.25rem; border-top: 1px solid #f0f1f3; display: flex; flex-direction: column; gap: 12px; }
+        .control-row { display: flex; align-items: center; gap: 12px; }
+        .btn { background: #fff; border: 1px solid #e8eaed; border-radius: 8px; padding: 6px 16px; font-size: 13px; font-weight: 500; color: #111827; cursor: pointer; transition: background 0.15s; }
+        .btn:hover { background: #f5f6f8; }
+        .btn.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+        .speed-label { font-size: 12px; color: #6b7280; min-width: 50px; }
+        .speed-val { font-size: 12px; font-weight: 500; color: #111827; min-width: 40px; }
+        input[type=range] { flex: 1; }
+        .frame-counter { font-size: 12px; color: #9ca3af; margin-left: auto; }
         .info-bar { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid #f0f1f3; }
         .stat { padding: 0.9rem 1.25rem; border-right: 1px solid #f0f1f3; }
         .stat:last-child { border-right: none; }
@@ -48,11 +57,20 @@
                 <div class="image-label"><strong>GOES-19</strong> · 24-hour timelapse · ABI false color</div>
                 <div class="timestamp" id="timestamp">Loading...</div>
             </div>
-            <div class="gif-wrap">
-                <img src="timelapse.gif" alt="GOES-19 24-hour timelapse" id="timelapse-img">
+            <div class="canvas-wrap">
+                <canvas id="timelapse-canvas" width="800" height="800"></canvas>
+            </div>
+            <div class="controls">
+                <div class="control-row">
+                    <button class="btn active" id="playpause">&#9646;&#9646; Pause</button>
+                    <span class="speed-label">Speed</span>
+                    <input type="range" id="speed" min="1" max="24" value="8" step="1">
+                    <span class="speed-val" id="speed-val">8 fps</span>
+                    <span class="frame-counter" id="frame-counter">Frame 1 / 1</span>
+                </div>
             </div>
             <div class="info-bar">
-                <div class="stat"><div class="stat-label">Frames</div><div class="stat-value">Up to 24</div></div>
+                <div class="stat"><div class="stat-label">Frames</div><div class="stat-value" id="frame-count">—</div></div>
                 <div class="stat"><div class="stat-label">Coverage</div><div class="stat-value">Last 24 hrs</div></div>
                 <div class="stat"><div class="stat-label">Updates</div><div class="stat-value">Every hour</div></div>
             </div>
@@ -65,12 +83,87 @@
     </div>
 
     <script>
+        const canvas = document.getElementById('timelapse-canvas');
+        const ctx = canvas.getContext('2d');
+        let frames = [];
+        let currentFrame = 0;
+        let playing = true;
+        let fps = 8;
+        let interval = null;
+
         fetch('timestamp.txt')
             .then(r => r.text())
+            .then(t => document.getElementById('timestamp').textContent = 'Last updated ' + t.trim())
+            .catch(() => {});
+
+        function updateFrameCounter() {
+            document.getElementById('frame-counter').textContent = 'Frame ' + (currentFrame + 1) + ' / ' + frames.length;
+        }
+
+        function drawFrame(index) {
+            if (frames.length === 0) return;
+            ctx.drawImage(frames[index], 0, 0, canvas.width, canvas.height);
+            updateFrameCounter();
+        }
+
+        function startAnimation() {
+            if (interval) clearInterval(interval);
+            interval = setInterval(() => {
+                currentFrame = (currentFrame + 1) % frames.length;
+                drawFrame(currentFrame);
+            }, 1000 / fps);
+        }
+
+        function loadFrames(count) {
+            document.getElementById('frame-count').textContent = count;
+            let loaded = 0;
+            frames = [];
+            for (let i = 0; i < count; i++) {
+                const img = new Image();
+                const padded = String(i).padStart(3, '0');
+                img.src = 'frames/frame_' + padded + '.jpg?v=' + Date.now();
+                img.onload = () => {
+                    frames[i] = img;
+                    loaded++;
+                    if (loaded === count) {
+                        drawFrame(0);
+                        startAnimation();
+                    }
+                };
+            }
+        }
+
+        fetch('frames/count.txt')
+            .then(r => r.text())
             .then(t => {
-                document.getElementById('timestamp').textContent = 'Last updated ' + t.trim();
+                const count = parseInt(t.trim());
+                if (count > 0) loadFrames(count);
             })
-            .catch(() => document.getElementById('timestamp').textContent = 'Unknown');
+            .catch(() => {
+                ctx.fillStyle = '#6b7280';
+                ctx.font = '16px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('No frames available yet', canvas.width / 2, canvas.height / 2);
+            });
+
+        document.getElementById('playpause').addEventListener('click', function() {
+            playing = !playing;
+            if (playing) {
+                this.textContent = '⏸ Pause';
+                this.classList.add('active');
+                startAnimation();
+            } else {
+                this.textContent = '▶ Play';
+                this.classList.remove('active');
+                clearInterval(interval);
+            }
+        });
+
+        document.getElementById('speed').addEventListener('input', function() {
+            fps = parseInt(this.value);
+            document.getElementById('speed-val').textContent = fps + ' fps';
+            if (playing) startAnimation();
+        });
     </script>
 </body>
 </html>
