@@ -1,6 +1,34 @@
 {
   "images": [
     {
+      "filename": "2026-05-05_01-00_water_vapor.jpg",
+      "url": "https://colemanstreams-cyber.github.io/goes19/archive/2026-05-05_01-00_water_vapor.jpg",
+      "timestamp": "2026-05-05 01-00",
+      "type": "water_vapor",
+      "label": "Upper-Level Water Vapor"
+    },
+    {
+      "filename": "2026-05-05_01-00_shortwave.jpg",
+      "url": "https://colemanstreams-cyber.github.io/goes19/archive/2026-05-05_01-00_shortwave.jpg",
+      "timestamp": "2026-05-05 01-00",
+      "type": "shortwave",
+      "label": "Shortwave Window"
+    },
+    {
+      "filename": "2026-05-05_01-00_false_color.jpg",
+      "url": "https://colemanstreams-cyber.github.io/goes19/archive/2026-05-05_01-00_false_color.jpg",
+      "timestamp": "2026-05-05 01-00",
+      "type": "false_color",
+      "label": "ABI False Color"
+    },
+    {
+      "filename": "2026-05-05_01-00_clean_longwave.jpg",
+      "url": "https://colemanstreams-cyber.github.io/goes19/archive/2026-05-05_01-00_clean_longwave.jpg",
+      "timestamp": "2026-05-05 01-00",
+      "type": "clean_longwave",
+      "label": "Clean Longwave IR"
+    },
+    {
       "filename": "2026-05-05_00-00_water_vapor.jpg",
       "url": "https://colemanstreams-cyber.github.io/goes19/archive/2026-05-05_00-00_water_vapor.jpg",
       "timestamp": "2026-05-05 00-00",
@@ -1023,6 +1051,6 @@
       "label": "Clean Longwave IR"
     }
   ],
-  "count": 146,
-  "updated": "2026-05-05 00:00 UTC"
+  "count": 150,
+  "updated": "2026-05-05 01:00 UTC"
 }
