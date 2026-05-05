@@ -1,15 +1,15 @@
 {
-  "temperature": "49.9",
-  "cpu_percent": "31.7",
-  "memory_used_mb": "1219",
+  "temperature": "49.4",
+  "cpu_percent": "36.6",
+  "memory_used_mb": "1002",
   "memory_total_mb": "8062",
-  "memory_percent": "15.1",
-  "fan_speed": "1",
-  "fan_label": "Low",
-  "power_draw_watts": "5.9",
-  "disk_used": "29G",
+  "memory_percent": "12.4",
+  "fan_speed": "0",
+  "fan_label": "Off",
+  "power_draw_watts": "6.3",
+  "disk_used": "30G",
   "disk_total": "58G",
-  "disk_percent": "52",
-  "uptime": "1 hour, 24 minutes",
-  "updated": "2026-05-05 01:00 UTC"
+  "disk_percent": "53",
+  "uptime": "2 hours, 24 minutes",
+  "updated": "2026-05-05 02:00 UTC"
 }
